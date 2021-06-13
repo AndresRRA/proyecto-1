@@ -1,0 +1,503 @@
+---
+title: "Proyecto 1"
+author: "Andrés Roberto Rivera Arrieta - B86559"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Cargando libraries
+
+```{r libraries}
+library(dplyr)
+library(ggplot2)
+library(ggdark)
+library(tidyverse)
+library(gridExtra)
+library(grid)
+```
+
+## Cargando el dataframe y eliminando celdas vacías
+
+Se agrega el parámetro `dec = ","` con el propósito de que RStudio pueda identificar el símbolo utilizado para marcar decimales. Esto es de vital importancia después a la hora de generar los gráficos.
+```{r carga datos}
+dat <- read.csv("liberia_datos_climaticos.csv", na.strings = c("", " ", "NA"),
+                dec = ",")
+```
+
+Debido a que el dataframe contiene celdas vacías, se deben limpiar.
+```{r limpieza celdas vacías}
+dat <- na.omit(dat)
+```
+
+### Definiendo variables
+
+Se añaden los siguientes comandos para que RStudio pueda comprender la naturaleza de los datos en cada columna, siendo la primera la fecha en que se obtuvieron los datos, y las siguientes columnas los distintos datos.Esto es de suma importancia a la hora de generar gráficos y estimar promedios.
+```{r definición variables}
+dat$Date <- as.Date(dat$Date, format = "%d/%m/%Y")
+dat$Temperatura..Celsius. <- as.numeric(dat$Temperatura..Celsius.)
+dat$HumedadRelativa.... <- as.numeric(dat$HumedadRelativa....)
+dat$VelocidadViento..m.s. <- as.numeric(dat$VelocidadViento..m.s.)
+dat$Lluvia..mm. <- as.numeric(dat$Lluvia..mm.)
+dat$Irradiacion..W.m2. <- as.numeric(dat$Irradiacion..W.m2.)
+dat$EvapoTranspiracion..mm. <- as.numeric(dat$EvapoTranspiracion..mm.)
+```
+
+## Histogramas
+Se elaboraron por medio de ggplot2.
+
+### Temperatura
+```{r histograma temperatura}
+a <- ggplot(dat, aes(x = Temperatura..Celsius.)) +
+  geom_histogram(binwidth = 0.5,
+                 color = "#00A1B3",
+                 fill = "#00A1B3", alpha = 0.8) +
+  ggtitle("Temperatura") +
+  xlab("Temperatura (°C)")  +
+ylab("Frecuencia") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Humedad relativa
+```{r histograma humedad}
+b <- ggplot(dat, aes(x = HumedadRelativa....)) +
+    geom_histogram(binwidth = 0.5,
+                   color = "#66CC33",
+                   fill = "#66CC33", alpha = 0.8) +
+    ggtitle("Humedad Relativa") +
+    xlab("Humedad")  +
+    ylab("Frecuencia") +
+    dark_theme_gray(base_size = 14) + 
+    theme(plot.title = element_text(face = "bold", hjust = 0.5),
+          plot.background = element_rect(fill = "grey20"),
+          panel.background = element_blank(),
+          panel.grid.major = element_line(color = "grey30", size = 0.2),
+          panel.grid.minor = element_line(color = "grey30", size = 0.2),
+          legend.background = element_blank(),
+          axis.ticks = element_blank(),
+          legend.key = element_blank(),
+          legend.position = c(0.815, 0.27))
+```
+
+### Velocidad viento
+```{r histograma viento}
+c <- ggplot(dat, aes(x = VelocidadViento..m.s.)) +
+  geom_histogram(binwidth = 0.5,
+                 color = "#87CEFA",
+                 fill = "#87CEFA", alpha = 0.8) +
+  ggtitle("Velocidad Viento") +
+  xlab("Velocidad (m/s)")  +
+  ylab("Frecuencia") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Lluvia
+```{r histograma lluvia}
+d <- ggplot(dat, aes(x = Lluvia..mm.)) +
+  geom_histogram(binwidth = 10,
+                 color = "#0000BF",
+                 fill = "#0000BF", alpha = 0.8) +
+  ggtitle("Lluvia") +
+  xlab("Lluvia (mm)")  +
+  ylab("Frecuencia") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Irradiación
+```{r histograma irradiación}
+e <- ggplot(dat, aes(x = Irradiacion..W.m2.)) +
+  geom_histogram(binwidth = 10,
+                 color = "#FFD700",
+                 fill = "#FFD700", alpha = 0.8) +
+  ggtitle("Irradiación") +
+  xlab("Irradiación (W/m^2)")  +
+  ylab("Frecuencia") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Evapotranspiración
+```{r histograma evap}
+f <- ggplot(dat, aes(x = EvapoTranspiracion..mm.)) +
+  geom_histogram(binwidth = 0.5,
+                 color = "#704098",
+                 fill = "#704098", alpha = 0.8) +
+  ggtitle("Evapotranspiración") +
+  xlab("Evapotranspiración (mm)")  +
+  ylab("Frecuencia") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Resultado
+
+Usando el comando `grid.arrange` proveniente de `gridExtra` se ordenan los gráficos en un único cuadro.
+
+```{r fig.width=12, fig.height=8}
+grid.arrange(a, b, c, d, e, f, nrow = 2,
+             top = textGrob("Histogramas", gp=gpar(fontsize=25,font=2)))
+```
+
+## Averiguando promedios mensuales
+
+Estos se realizaron creando nuevos dataframes, con los datos sacados por medio de la función `tapply`. La primer columna de estos dataframes están enumeradas del 1 al 12, correspondiendo cada número al mes, yendo en orden cronológico.
+  
+### Promedio mensual temperatura
+
+```{r promedio temp}
+prom_mensual_temp <- data.frame(Mes = 1:12,
+                                Temperatura = tapply
+                                (dat$Temperatura..Celsius., 
+                                            format(dat$Date, format = "%m"), 
+                                            FUN = mean))
+
+a1 <- ggplot(prom_mensual_temp, aes(x = Mes, y = Temperatura)) +
+  geom_line(color = "#00A1B3",) +
+  geom_point(color = "#00A1B3") +
+  scale_x_continuous(breaks = seq(1, 12, by = 2)) +
+  ylim(22.5,30) +
+  ggtitle("Temperatura") +
+  xlab("Mes")  +
+  ylab("Temperatura (°C)") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Promedio mensual humedad relativa
+
+```{r promedio hum}
+prom_mensual_humedad <- data.frame(Mes = 1:12,
+                                Humedad = tapply
+                                (dat$HumedadRelativa...., 
+                                  format(dat$Date, format = "%m"), 
+                                  FUN = mean))
+
+b1 <- ggplot(prom_mensual_humedad, aes(x = Mes, y = Humedad)) +
+  geom_line(color = "#66CC33",) +
+  geom_point(color = "#66CC33") +
+  scale_x_continuous(breaks = seq(1, 12, by = 2)) +
+  ylim(55,85) +
+  ggtitle("Humedad relativa") +
+  xlab("Mes")  +
+  ylab("Humedad relativa") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Promedio mensual velocidad viento
+
+```{r promedio viento}
+prom_mensual_viento <- data.frame(Mes = 1:12,
+                                   Velocidad = tapply
+                                   (dat$VelocidadViento..m.s., 
+                                     format(dat$Date, format = "%m"), 
+                                     FUN = mean))
+
+c1 <- ggplot(prom_mensual_viento, aes(x = Mes, y = Velocidad)) +
+  geom_line(color = "#87CEFA",) +
+  geom_point(color = "#87CEFA") +
+  scale_x_continuous(breaks = seq(1, 12, by = 2)) +
+  ylim(0,10) +
+  ggtitle("Velocidad viento") +
+  xlab("Mes")  +
+  ylab("Velocidad (m/s)") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Suma mensual lluvia
+
+```{r suma lluvia}
+suma_mensual_lluvia <- data.frame(Mes = 1:12,
+                                  Lluvia = tapply
+                                  (dat$Lluvia..mm., 
+                                    format(dat$Date, format = "%m"), 
+                                    FUN = sum))
+
+d1 <- ggplot(suma_mensual_lluvia, aes(x = Mes, y = Lluvia)) +
+  geom_line(color = "#0000BF",) +
+  geom_point(color = "#0000BF") +
+  scale_x_continuous(breaks = seq(1, 12, by = 2)) +
+  ylim(0,1800) +
+  ggtitle("Suma mensual lluvia") +
+  xlab("Mes")  +
+  ylab("Cantidad lluvia (mm)") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Promedio mensual irradiación
+
+```{r prom irrad}
+prom_mensual_irrad <- data.frame(Mes = 1:12,
+                                  Irradiación = tapply
+                                  (dat$Irradiacion..W.m2., 
+                                    format(dat$Date, format = "%m"), 
+                                    FUN = mean))
+
+e1 <- ggplot(prom_mensual_irrad, aes(x = Mes, y = Irradiación)) +
+  geom_line(color = "#FFD700",) +
+  geom_point(color = "#FFD700") +
+  scale_x_continuous(breaks = seq(1, 12, by = 2)) +
+  ylim(170,280) +
+  ggtitle("Irradiación") +
+  xlab("Mes")  +
+  ylab("Irradiación (W/m^2)") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Suma mensual evapotranspiración
+
+```{r suma evapo}
+suma_mensual_evapo <- data.frame(Mes = 1:12,
+                                  Evapotranspiración = tapply
+                                  (dat$EvapoTranspiracion..mm., 
+                                    format(dat$Date, format = "%m"), 
+                                    FUN = sum))
+
+f1 <- ggplot(suma_mensual_evapo, aes(x = Mes, y = Evapotranspiración)) +
+  geom_line(color = "#704098") +
+  geom_point(color = "#704098") +
+  scale_x_continuous(breaks = seq(1, 12, by = 2)) +
+  ylim(360, 960) +
+  ggtitle("Suma mensual evapotrans.") +
+  xlab("Mes")  +
+  ylab("Evapotranspiración (mm)") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Resultado
+
+```{r fig.width=12, fig.height=8}
+grid.arrange(a1, b1, c1, d1, e1, f1, nrow = 2,
+             top = textGrob("Promedios (y sumas) mensuales", gp=gpar(fontsize=25,font=2)))
+```
+
+## Gráficos de dispersión
+
+### Relación temperatura-lluvia  
+```{r}
+a2 <- ggplot(dat, aes(x = Temperatura..Celsius.)) +
+  geom_point(
+    aes(y = Lluvia..mm.,)) +
+  ggtitle("Temperatura - Lluvia") +
+  xlab("Temperatura (°C)") +
+  ylab("Lluvia (mm)") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Relación temperatura-irradiación  
+```{r}
+b2 <- ggplot(dat, aes(x = Temperatura..Celsius.)) +
+  geom_point(
+    aes(y = Irradiacion..W.m2.)
+  ) +
+  ggtitle("Temperatura - Irradiación") +
+  xlab("Temperatura (°C)") +
+  ylab("Irradiación (W/m^2") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Relación lluvia-evapotranspiración  
+```{r}
+c2 <- ggplot(dat, aes(x = Lluvia..mm.)) +
+  geom_point(
+    aes(y = EvapoTranspiracion..mm.)
+  ) +
+  ggtitle("Lluvia - Evapotrans.") +
+  xlab("Lluvia (mm)") +
+  ylab("Evapotranspiración (mm)") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Relación lluvia-humedad  
+```{r}
+d2 <- ggplot(dat, aes(x = Lluvia..mm.)) +
+  geom_point(
+    aes(y = HumedadRelativa....)
+  ) +
+  ggtitle("Lluvia - Humedad") +
+  xlab("Lluvia (mm)") +
+  ylab("Humedad relativa") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Relación irradiación-evapotranspiración  
+```{r}
+e2 <- ggplot(dat, aes(x = Irradiacion..W.m2.)) +
+  geom_point(
+    aes(y = EvapoTranspiracion..mm.)
+  ) +
+  ggtitle("Irradiación - Evapotrans.") +
+  xlab("Irradiación (W/m^2)") +
+  ylab("Evapotranspiración") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Relación temperatura-viento  
+```{r}
+f2 <- ggplot(dat, aes(x = Temperatura..Celsius.)) +
+  geom_point(
+    aes(y = VelocidadViento..m.s.)
+  ) +
+  ggtitle("Temperatura - Velocidad del viento") +
+  xlab("Temperatura (°C)") +
+  ylab("Velocidad (m/s)") +
+  dark_theme_gray(base_size = 14) + 
+  theme(plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.background = element_rect(fill = "grey20"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey30", size = 0.2),
+        panel.grid.minor = element_line(color = "grey30", size = 0.2),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.key = element_blank(),
+        legend.position = c(0.815, 0.27))
+```
+
+### Resultados  
+```{r fig.width=12, fig.height=8}
+grid.arrange(a2, b2, c2, d2, e2, f2, nrow = 2,
+             top = textGrob("Relaciones de datos",
+                            gp=gpar(fontsize=25,font=2)))
+```
